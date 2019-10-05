@@ -1,39 +1,39 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField]
     public StencilWriter writer;
 
-    float moveSpeed = 2f;
-
-    void Start()
-    {
-    }
+    float moveSpeed = 1f;
 
     void Update()
     {
-        var x = Input.GetAxis("Horizontal");
-        if (x > 0f) x = 1f;
-        else if (x < 0f) x = -1f;
-        else x = 0f;
-        var y = Input.GetAxis("Vertical");
-        if (y > 0f) y = 1f;
-        else if (y < 0f) y = -1f;
-        else y = 0f;
+        var children = GetComponentsInChildren<Transform>();
+        var oldPositions = new Vector3[children.Length];
 
+        // Store all old positions
+        for (int i = 0; i < children.Length; i++)
+        {
+            oldPositions[i] = children[i].position;
+        }
+
+        var x = Input.GetAxis("Horizontal");
+        var y = Input.GetAxis("Vertical");
         var movement = new Vector3(x, y, 0f).normalized * moveSpeed;
-        var oldPosition = transform.position;
 
         transform.Translate(movement);
 
         var magnitude = movement.magnitude;
-        for (int i = 0; i < Mathf.CeilToInt(magnitude); i++)
+
+        // Paint all new positions, lerping as needed
+        for (int i = 0; i < children.Length; i++)
         {
-            var lerp = Vector3.Lerp(oldPosition, transform.position, (float)i / magnitude);
-            writer.Reveal(lerp, StencilWriter.UpdateKind.Reveal);
+            for (int j = 0; j < Mathf.CeilToInt(magnitude); j++)
+            {
+                var lerp = Vector3.Lerp(oldPositions[i], children[i].position, (float)j / magnitude);
+                writer.Reveal(lerp, StencilWriter.UpdateKind.Reveal);
+            }
         }
     }
 }
