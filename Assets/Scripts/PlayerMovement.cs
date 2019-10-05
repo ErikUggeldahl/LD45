@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    float moveSpeed = 1f;
+    [SerializeField]
+    public StencilWriter writer;
+
+    float moveSpeed = 2f;
 
     void Start()
     {
@@ -22,7 +25,15 @@ public class PlayerMovement : MonoBehaviour
         else y = 0f;
 
         var movement = new Vector3(x, y, 0f).normalized * moveSpeed;
+        var oldPosition = transform.position;
 
         transform.Translate(movement);
+
+        var magnitude = movement.magnitude;
+        for (int i = 0; i < Mathf.CeilToInt(magnitude); i++)
+        {
+            var lerp = Vector3.Lerp(oldPosition, transform.position, (float)i / magnitude);
+            writer.Reveal(lerp, StencilWriter.UpdateKind.Reveal);
+        }
     }
 }
