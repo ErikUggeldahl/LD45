@@ -5,7 +5,7 @@ using UnityEngine;
 public class Explosion : MonoBehaviour
 {
     [SerializeField]
-    GameObject explosionParticle;
+    public GameObject explosionParticle;
 
     [SerializeField]
     public StageControl stageControl;

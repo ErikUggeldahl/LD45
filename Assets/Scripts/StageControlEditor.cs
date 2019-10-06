@@ -4,7 +4,7 @@
 public class StageControlEditor : MonoBehaviour
 {
     [SerializeField]
-    StageControl stageControl;
+    public StageControl stageControl;
 
     [SerializeField]
     public Camera stageCamera;
