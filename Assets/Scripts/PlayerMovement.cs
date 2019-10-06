@@ -3,6 +3,9 @@
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField]
+    public StageControl stageControl;
+
+    [SerializeField]
     public StencilWriter writer;
 
     float moveSpeed = 1f;
@@ -23,6 +26,12 @@ public class PlayerMovement : MonoBehaviour
         var movement = new Vector3(x, y, 0f).normalized * moveSpeed;
 
         transform.Translate(movement);
+        var position = transform.position;
+        position = new Vector3(
+            Mathf.Clamp(position.x, -stageControl.stageScale, stageControl.stageScale),
+            Mathf.Clamp(position.y, -stageControl.stageScale, stageControl.stageScale),
+            0f);
+        transform.position = position;
 
         var magnitude = movement.magnitude;
 

@@ -7,14 +7,22 @@ public class StencilWriter : MonoBehaviour
     [SerializeField]
     public Material backgroundMaterial;
 
+    [SerializeField]
+    public StageControl stageControl;
+
     Texture2D stencil;
 
-    const int RESOLUTION = 200;
+    int resolution;
 
     public enum UpdateKind
     {
         Reveal,
         Hide
+    }
+
+    void Awake()
+    {
+        resolution = (int)stageControl.stageScale * 2;
     }
 
     struct Update
@@ -27,7 +35,7 @@ public class StencilWriter : MonoBehaviour
 
     void Start()
     {
-        stencil = new Texture2D(RESOLUTION, RESOLUTION, TextureFormat.Alpha8, false);
+        stencil = new Texture2D(resolution, resolution, TextureFormat.Alpha8, false);
         stencil.filterMode = FilterMode.Point;
         stencil.wrapMode = TextureWrapMode.Clamp;
 
@@ -45,8 +53,8 @@ public class StencilWriter : MonoBehaviour
     {
         return new Update
         {
-            x = RESOLUTION / 2 - Mathf.RoundToInt(worldPosition.x),
-            y = RESOLUTION / 2 - Mathf.RoundToInt(worldPosition.y)
+            x = resolution / 2 - Mathf.RoundToInt(worldPosition.x),
+            y = resolution / 2 - Mathf.RoundToInt(worldPosition.y)
         };
     }
 
