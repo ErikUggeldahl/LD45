@@ -1,27 +1,34 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
-[ExecuteInEditMode]
 public class StageControl : MonoBehaviour
 {
     [SerializeField]
-    public Camera stageCamera;
+    public StencilWriter stencilWriter;
 
     [SerializeField]
-    public Transform background;
+    public GameObject explosionPrefab;
 
     public float stageScale = 25f;
 
     void Start()
     {
-        stageCamera.orthographicSize = stageScale;
+        StartCoroutine(SpawnExplosion());
     }
 
-    void Update()
+    IEnumerator SpawnExplosion()
     {
-        if (!Application.IsPlaying(gameObject))
+        while(true)
         {
-            stageCamera.orthographicSize = stageScale;
-            background.localScale = new Vector3(stageScale / 5f, 1f, stageScale / 5f);
+            var x = Random.Range(-stageScale, stageScale);
+            var y = Random.Range(-stageScale, stageScale);
+
+            var explosion = Instantiate(explosionPrefab, new Vector3(x, y), Quaternion.identity);
+            var explosionScript = explosion.GetComponent<Explosion>();
+            explosionScript.stageControl = this;
+            explosionScript.stencilWriter = stencilWriter;
+
+            yield return new WaitForSeconds(10f);
         }
     }
 }
